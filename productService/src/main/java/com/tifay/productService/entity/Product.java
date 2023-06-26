@@ -1,13 +1,21 @@
 package com.tifay.productService.entity;
 
-import javax.persistence.Entity;
+import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
+@Data
 public class Product {
-    private long productId;
-    private String productName;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long productId;
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
+    @Column(name = "PRICE")
     private long price;
+    @Column(name = "QUANTITY")
     private long quantity;
 
 
