@@ -1,6 +1,7 @@
 package com.tifay.productService.controller;
 
 import com.tifay.productService.model.ProductRequest;
+import com.tifay.productService.model.ProductResponse;
 import com.tifay.productService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,9 @@ public class ProductController {
         return new ResponseEntity<>(productId, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<>
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") long productId) {
+        ProductResponse productResponse = productService.getProductById(productId);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
 }

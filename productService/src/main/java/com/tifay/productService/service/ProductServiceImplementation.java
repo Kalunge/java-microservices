@@ -1,11 +1,16 @@
 package com.tifay.productService.service;
 
 import com.tifay.productService.entity.ProductEntity;
+import com.tifay.productService.exception.ProductServiceCustomException;
 import com.tifay.productService.model.ProductRequest;
+import com.tifay.productService.model.ProductResponse;
 import com.tifay.productService.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.Id;
 
 @Service
 @Log4j2
@@ -29,5 +34,15 @@ public class ProductServiceImplementation implements ProductService{
         return product.getProductId();
 
 
+    }
+
+    @Override
+    public ProductResponse getProductById(long productId) {
+        log.info("Get the product for productId: {}", productId);
+        ProductEntity entity = productRepository.findById(productId).orElseThrow(() -> new ProductServiceCustomException("Product with the given id could not be found ", "PRODUCT_NOT_FOUND"));
+        ProductResponse productResponse = new ProductResponse();
+        BeanUtils.copyProperties(entity, productResponse);
+
+        return productResponse;
     }
 }
