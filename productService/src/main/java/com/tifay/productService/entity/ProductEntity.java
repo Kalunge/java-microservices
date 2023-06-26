@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long productId;
+    private Long productId;
     @Column(name = "PRODUCT_NAME")
     private String productName;
     @Column(name = "PRICE")
