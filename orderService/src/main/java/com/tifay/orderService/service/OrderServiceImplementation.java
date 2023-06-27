@@ -5,12 +5,15 @@ import com.tifay.orderService.exception.CustomException;
 import com.tifay.orderService.external.client.PaymentService;
 import com.tifay.orderService.external.client.ProductService;
 import com.tifay.orderService.external.request.PaymentRequest;
+import com.tifay.orderService.external.response.PaymentResponse;
+import com.tifay.orderService.external.response.ProductResponse;
 import com.tifay.orderService.model.OrderRequest;
 import com.tifay.orderService.model.OrderResponse;
 import com.tifay.orderService.repository.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 
@@ -25,6 +28,9 @@ public class OrderServiceImplementation implements OrderService {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public long placeOrder(OrderRequest orderRequest) {
@@ -69,7 +75,31 @@ public class OrderServiceImplementation implements OrderService {
         log.info("Get order details for order id " + orderId);
 
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("Order Not found for the given id", "NOT_FOUND", 404));
+        log.info("Invoking product service to get product for id");
 
-        return OrderResponse.builder().orderId(order.getId()).amount(order.getAmount()).orderDate(order.getOrderDate()).orderStatus(order.getOrderStatus()).build();
+        ProductResponse productResponse = restTemplate.getForObject("http://PRODUCT-SERVICE/products/" + order.getProductId(), ProductResponse.class);
+
+        log.info("Getting payment information from payment service");
+
+        PaymentResponse paymentResponse = restTemplate.getForObject("http://PAYMENT-SERVICE/payments/orders/" + order.getId(), PaymentResponse.class);
+
+        assert productResponse != null;
+        OrderResponse.ProductDetails productDetails = OrderResponse.ProductDetails.builder().productName(productResponse.getProductName()).productId(productResponse.getProductId()).quantity(productResponse.getQuantity()).price(productResponse.getPrice()).build();
+
+        assert paymentResponse != null;
+        OrderResponse.PaymentDetails paymentDetails = OrderResponse.PaymentDetails.builder()
+                .paymentId(paymentResponse.getPaymentId())
+                .status(paymentResponse.getStatus())
+                .paymentDate(paymentResponse.getPaymentDate())
+                .paymentMode(paymentResponse.getPaymentMode())
+                .build();
+
+        return OrderResponse.builder().orderId(order.getId())
+                .amount(order.getAmount())
+                .orderDate(order.getOrderDate())
+                .orderStatus(order.getOrderStatus())
+                .productDetails(productDetails)
+                .paymentDetails(paymentDetails)
+                .build();
     }
 }
