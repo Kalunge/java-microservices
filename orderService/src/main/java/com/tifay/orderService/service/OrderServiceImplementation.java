@@ -1,6 +1,7 @@
 package com.tifay.orderService.service;
 
 import com.tifay.orderService.entity.Order;
+import com.tifay.orderService.external.client.ProductService;
 import com.tifay.orderService.model.OrderRequest;
 import com.tifay.orderService.repository.OrderRepository;
 import lombok.extern.log4j.Log4j2;
@@ -11,10 +12,13 @@ import java.time.Instant;
 
 @Service
 @Log4j2
-public class OrderServiceImplementation implements OrderService{
+public class OrderServiceImplementation implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ProductService productService;
+
     @Override
     public long placeOrder(OrderRequest orderRequest) {
         //Order Entity -> Save the data with Status Order Created
@@ -23,6 +27,10 @@ public class OrderServiceImplementation implements OrderService{
         //CANCELLED
 
         log.info("Placing order request: {}", orderRequest);
+
+        productService.reduceQuantity(orderRequest.getProductId(), orderRequest.getQuantity());
+
+        log.info("Creating order with status created");
 
         Order order = Order.builder()
                 .amount(orderRequest.getAmount())

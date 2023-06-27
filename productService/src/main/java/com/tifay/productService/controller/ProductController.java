@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     @Autowired
     private ProductService productService;
+
     @PostMapping
-    public ResponseEntity<Long> addProduct(@RequestBody ProductRequest productRequest){
+    public ResponseEntity<Long> addProduct(@RequestBody ProductRequest productRequest) {
         long productId = productService.addProduct(productRequest);
         return new ResponseEntity<>(productId, HttpStatus.CREATED);
     }
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @PutMapping("reduceQuantity/{id}")
-    public ResponseEntity<Void> reduceQuantity(@PathVariable("id") long productId, @RequestParam long quantity ) {
+    public ResponseEntity<Void> reduceQuantity(@PathVariable("id") long productId, @RequestParam long quantity) {
         productService.reduceQuantity(productId, quantity);
 
         return new ResponseEntity<>(HttpStatus.OK);
