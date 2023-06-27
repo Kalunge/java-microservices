@@ -48,7 +48,7 @@ public class ProductServiceImplementation implements ProductService{
 
     @Override
     public void reduceQuantity(long productId, long quantity) {
-        log.info("`reduce quantity: {} for id: {}", quantity, productId);
+        log.info("`reduce quantity {} for id: {}", quantity, productId);
 
         ProductEntity product = productRepository.findById(productId).orElseThrow(() -> new ProductServiceCustomException("Product with given id not found", "PRODUCT_NOT_FOUND"));
         if (product.getQuantity() < quantity) {
