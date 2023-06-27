@@ -19,7 +19,7 @@ public class TransactionDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name="ORDER_ID")
     private long orderId;

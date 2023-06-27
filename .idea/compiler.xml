@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="serviceRegistry" />
+        <module name="paymentService" />
         <module name="configServer" />
         <module name="productService" />
         <module name="orderService" />
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="configServer" options="-parameters" />
       <module name="orderService" options="-parameters" />
+      <module name="paymentService" options="-parameters" />
       <module name="productService" options="-parameters" />
       <module name="serviceRegistry" options="-parameters" />
     </option>
